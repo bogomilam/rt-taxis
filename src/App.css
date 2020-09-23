@@ -64,3 +64,8 @@
   min-height: 400px;
   max-width: 320px;
 }
+
+.slider {
+  width: 300;
+  margin: 80;
+}
