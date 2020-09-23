@@ -82,7 +82,7 @@ export default function App() {
     },
     {
       value: 100,
-      label: "10"
+      label: "100"
     }
   ]
  
