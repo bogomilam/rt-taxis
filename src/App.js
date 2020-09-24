@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { GoogleMap, withScriptjs, withGoogleMap, Marker } from "react-google-maps";
 import './App.css';
 import Header from "./components/Header"
-import {Slider} from "@material-ui/core"
+import { Slider } from "@material-ui/core"
 
 const TAXI_ENDPOINT = "https://qa-interview-test.qa.splytech.io/api/drivers?&longitude=-0.0964509&count=5"
 const CORS_URL = `https://cors-anywhere.herokuapp.com/${TAXI_ENDPOINT}`
@@ -18,21 +18,10 @@ const Map = () => {
   // radius of the earth in km
   const [ radius ] = useState(6371)
   //angular distance for the new coordinates
-  const [ angularDistance ] = useState(distance/radius)
-  // const [ newBearings, setNewBearings ] = useState({})
+  const [ newPoints, setNewPoints ] = useState([])
 
 
   // a function that takes a bearing and calculates the new coordinates using distance and center point from state
-  const newPoints = (br) => {
-    let newCoodArr = []
-    let la2 = Math.asin( Math.sin(centerPoint[0] * Math.cos(angularDistance) + (Math.cos(centerPoint[0]) * Math.sin(angularDistance)) * Math.cos(br)) )
-    // console.log(la2, "LA2")
-    let lng2 = centerPoint[1] + Math.atan2( Math.sin(br) * Math.sin(angularDistance) * Math.cos(centerPoint[0]) , Math.cos(angularDistance) - Math.sin(centerPoint[0]) * Math.sin(la2) )
-    //  console.log(lng2, "Lng2")
-     newCoodArr.push(la2, lng2)
-     return newCoodArr
-  }
-
   const newCoord = (br) => {
     const bearingRadian = (90-br)*Math.PI/180
 
@@ -62,17 +51,20 @@ const Map = () => {
   }, []);
 
 
+
 // grab the bearing of each taxi
 const taxiBearings = cabs.map(c => c.location.bearing)
 
 // take each bearing and pass it to the function in order to get new points
 const taxiCoord = () => {
+  let endPoints = []
     taxiBearings.map(br => (
-      <Marker key={1} position={{ lat: newCoord(br)['x'], lng: newCoord(br['y']) }} />
+      endPoints.push(newCoord(br))
+      // <Marker key={1} position={{ lat: newCoord(br)['x'], lng: newCoord(br['y']) }} />
       ))
-      // console.log(newCoord(br)['x'], " hdhgd", newCoord(br)['y'])
+      console.log(typeof endPoints)
     }
-
+    
 
   return (
     <GoogleMap
@@ -101,7 +93,7 @@ export default function App() {
   ]
  
   const getValue = (value) => {
-    console.log(value)
+    // console.log(value)
   }
 
 return (
