@@ -42,6 +42,7 @@ const Map = () => {
     const x  = centerPoint[0] + deltaX
     const y = centerPoint[1] + deltaY
 
+    // console.log({x, y})
     return {x, y}
   }
 
@@ -61,18 +62,16 @@ const Map = () => {
   }, []);
 
 
-// grab the bearing of each taxi and feed it to the new coordinates solution
-  const newtaxiBearings = cabs.map(c => c.location.bearing)
-  
-  const taxiCoord = newtaxiBearings.map(br => {
-    return newCoord(br)
-  })
-    //loggin each bearing of 
-    // console.log(newCoord(br))
-    // return  <Marker key={newCoord(br)["x"]} position={{ lat: newCoord(br)["x"], lng: newCoord(br)["y"] }} 
-    // />
-  
+// grab the bearing of each taxi
+const taxiBearings = cabs.map(c => c.location.bearing)
 
+// take each bearing and pass it to the function in order to get new points
+const taxiCoord = () => {
+    taxiBearings.map(br => (
+      <Marker key={1} position={{ lat: newCoord(br)['x'], lng: newCoord(br['y']) }} />
+      ))
+      // console.log(newCoord(br)['x'], " hdhgd", newCoord(br)['y'])
+    }
 
 
   return (
@@ -80,10 +79,7 @@ const Map = () => {
     defaultZoom={14}
     defaultCenter={{ lat: 51.5049375, lng: -0.09612135008594562 }}
     >
-  {taxiCoord.map(c => {
-    return   <Marker key={c["y"]} position={{ lat: c["x"], lng: c["y"] }}/>
-    // console.log(c["y"],"dhd",c["x"])
-})}
+     {taxiCoord()}
      
     </GoogleMap>
   )
