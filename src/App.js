@@ -33,6 +33,18 @@ const Map = () => {
      return newCoodArr
   }
 
+  const newCoord = (br) => {
+    const bearingRadian = (90-br)*Math.PI/180
+
+    const deltaX = distance * Math.cos(bearingRadian)
+    const deltaY = distance * Math.sin(bearingRadian)
+
+    const x  = centerPoint[0] + deltaX
+    const y = centerPoint[1] + deltaY
+
+    return {x, y}
+  }
+
   // fetch live taxi data
   const getTaxis = () => {
     return fetch(CORS_URL).then(jsonify).then(data => {
@@ -50,13 +62,16 @@ const Map = () => {
 
 
 // grab the bearing of each taxi and feed it to the new coordinates solution
-  const newtaxiBearings = cabs.map(c => c.location.bearing).forEach(br => {
-    //loggin each bearing of 
-    console.log(newPoints(br)[0], newPoints(br)[1] )
-     return <Marker  
-     position={{ lat: newPoints(br)[0], lng: newPoints(br)[1] }} 
-     />
+  const newtaxiBearings = cabs.map(c => c.location.bearing)
+  
+  const taxiCoord = newtaxiBearings.map(br => {
+    return newCoord(br)
   })
+    //loggin each bearing of 
+    // console.log(newCoord(br))
+    // return  <Marker key={newCoord(br)["x"]} position={{ lat: newCoord(br)["x"], lng: newCoord(br)["y"] }} 
+    // />
+  
 
 
 
@@ -65,15 +80,10 @@ const Map = () => {
     defaultZoom={14}
     defaultCenter={{ lat: 51.5049375, lng: -0.09612135008594562 }}
     >
-      {cabs.map(c => c.location.bearing).forEach(br => {
-    
-    console.log(newPoints(br)[0], newPoints(br)[1] )
-     return <Marker  
-     position={{ lat: newPoints(br)[0], lng: newPoints(br)[1] }} 
-     />
-      } )}
-       {/* <Marker position={{ lat: 51.5049375, lng: -0.0964509 }}/> */}
-{/* {cabs.map(c => console.log(c.location.bearing))} */}
+  {taxiCoord.map(c => {
+    return   <Marker key={c["y"]} position={{ lat: c["x"], lng: c["y"] }}/>
+    // console.log(c["y"],"dhd",c["x"])
+})}
      
     </GoogleMap>
   )
