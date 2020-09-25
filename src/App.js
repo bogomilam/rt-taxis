@@ -62,7 +62,10 @@ const taxiCoord = () => {
       endPoints.push(newCoord(br))
       // <Marker key={1} position={{ lat: newCoord(br)['x'], lng: newCoord(br['y']) }} />
       ))
-      console.log(typeof endPoints)
+      endPoints.forEach(arr => (
+        console.log(arr.x, arr.y)
+        // <Marker key={1} position={{ lat : arr.x, lng: arr.y }} />
+      ))
     }
     
 
@@ -84,7 +87,7 @@ export default function App() {
   const marks = [
     {
       value: 0,
-      label: "1"
+      label: "0"
     },
     {
       value: 100,
