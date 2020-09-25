@@ -3,26 +3,21 @@ import { GoogleMap, withScriptjs, withGoogleMap, Marker } from "react-google-map
 import './App.css';
 import Header from "./components/Header"
 import { Slider } from "@material-ui/core"
-
-const TAXI_ENDPOINT = "https://qa-interview-test.qa.splytech.io/api/drivers?&longitude=-0.0964509&count=5"
-const CORS_URL = `https://cors-anywhere.herokuapp.com/${TAXI_ENDPOINT}`
+import API from "./adapters/API"
 
 
 const Map = () => {
-  // live taxis from ENDPOINT
+  // live taxis from API ENDPOINT
   const [ cabs, setCabs ] = useState([])
-  // center point of map for the new coordinates
+  // center point of map Splyt office
   const [ centerPoint ] = useState([51.5049375, -0.0964509])
-  // current distance/radius in km
+  // current slider's value/distance
   const [ distance ] = useState(1)
-  // radius of the earth in km
-  const [ radius ] = useState(6371)
-  //angular distance for the new coordinates
-  const [ newPoints, setNewPoints ] = useState([])
 
 
-  // a function that takes a bearing and calculates the new coordinates using distance and center point from state
+  // a function that takes a bearing and calculates the new coordinates using the distance and center points from state
   const newCoord = (br) => {
+
     const bearingRadian = (90-br)*Math.PI/180
 
     const deltaX = distance * Math.cos(bearingRadian)
@@ -31,40 +26,34 @@ const Map = () => {
     const x  = centerPoint[0] + deltaX
     const y = centerPoint[1] + deltaY
 
-    // console.log({x, y})
     return {x, y}
   }
 
   // fetch live taxi data
-  const getTaxis = () => {
-    return fetch(CORS_URL).then(jsonify).then(data => {
+  const fetchCabs = () => {
+    return API.getTaxis().then(data => {
       setCabs(data.drivers)
     })
   }
 
-  // Format response into JSON
-  const jsonify = res => res.json()
-
-  //Call for the taxi data once the app has been loaded
+  //Call for the taxi data once the app has fully been loaded
   useEffect(() => {
-    getTaxis();
+    fetchCabs();
   }, []);
 
-
-
-// grab the bearing of each taxi
+// grab the bearing element of each taxi object
 const taxiBearings = cabs.map(c => c.location.bearing)
 
-// take each bearing and pass it to the function in order to get new points
+// take each bearing and pass it to the function in order to get new coordinates
 const taxiCoord = () => {
+  // make an array to insert all the new cab points as x/y objects
   let endPoints = []
     taxiBearings.map(br => (
       endPoints.push(newCoord(br))
-      // <Marker key={1} position={{ lat: newCoord(br)['x'], lng: newCoord(br['y']) }} />
       ))
       endPoints.forEach(arr => (
-        console.log(arr.x, arr.y)
-        // <Marker key={1} position={{ lat : arr.x, lng: arr.y }} />
+        console.log(parseFloat(arr.x), parseFloat(arr.y) ) 
+        // <Marker  position={{ lat : parseFloat(arr.x), lng: parseFloat(arr.y) }} />
       ))
     }
     
@@ -74,7 +63,9 @@ const taxiCoord = () => {
     defaultZoom={14}
     defaultCenter={{ lat: 51.5049375, lng: -0.09612135008594562 }}
     >
-     {taxiCoord()}
+           <Marker position={{ lat: 51.5049375, lng: -0.09612135008594562}} />
+           <Marker position={{ lat: 51.5059375, lng: -0.09612435008594562}} />
+    {taxiCoord()}
      
     </GoogleMap>
   )
@@ -102,7 +93,7 @@ export default function App() {
 return (
 <div>
   <Header />
-<div style={{ width: 650, margin: 50 }} >
+<div  style={{ width: 650, margin: 50 }} >
   <Slider 
     defaultValue={10}
     maxValue={100}
@@ -115,11 +106,11 @@ return (
 </div>
   <WrappedMap 
     googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyAmtFOC7NcpCM4YwCEZTm4zpgpVtesPJMI"
-    loadingElement={<div style={{ height: `100%` }} />}
+    loadingElement={<div style={{ height: `10%` }} />}
     containerElement={<div style={{ height: `400px` }} />}
     mapElement={<div style={{ height: `100%` }} />}
     >
-
+  
   </WrappedMap>
 </div>
 )
