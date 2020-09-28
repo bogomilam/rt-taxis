@@ -48,12 +48,12 @@ const taxiBearings = cabs.map(c => c.location.bearing)
 const taxiCoord = () => {
   // make an array to insert all the new cab points as x/y objects
   let endPoints = []
-    taxiBearings.map(br => (
+    taxiBearings.forEach(br => (
       endPoints.push(newCoord(br))
       ))
       endPoints.forEach(arr => (
-        console.log(parseFloat(arr.x), parseFloat(arr.y) ) 
-        // <Marker  position={{ lat : parseFloat(arr.x), lng: parseFloat(arr.y) }} />
+        console.log(typeof arr.x, parseFloat(arr["y"]), "HEY") 
+        // <Marker  key={arr.y} position={{ lat : parseFloat(arr.x), lng: parseFloat(arr.y) }} />
       ))
     }
     
@@ -66,6 +66,7 @@ const taxiCoord = () => {
            <Marker position={{ lat: 51.5049375, lng: -0.09612135008594562}} />
            <Marker position={{ lat: 51.5059375, lng: -0.09612435008594562}} />
     {taxiCoord()}
+ 
      
     </GoogleMap>
   )
